@@ -1,0 +1,88 @@
+name: CI
+
+on:
+  - push
+
+jobs:
+  lint:
+    name: Lint
+    run-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 5
+      
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        node-version-file: '.tool-versions'
+      
+      - name: Cache Dependencies
+        id: cache-node-modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: ${{ runner.os }}-node-modules-
+
+      - name: Install Dependencies
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: npm ci
+      
+      - name: Type Check
+        run: npm run check-types
+
+      - name: Check Lint
+        run: npm run lint:changed-since
+
+
+  # build:
+  #   name: Build
+  #   run-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 5
+
+  #     - name: Use Node.js
+  #       uses: actions/setup-node@v3
+  #       node-version-file: '.tool-versions'
+
+  #     - name: Cache Dependencies
+  #       id: cache-node-modules
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: node_modules
+  #         key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
+  #         restore-keys: ${{ runner.os }}-node-modules-
+
+  #     - name: Install Dependencies
+  #       if: steps.cache-node-modules.outputs.cache-hit != 'true'
+  #       run: npm ci
+
+  #     - name: Make envfile
+  #       uses: SpicyPizza/create-envfile@v1
+  #       with:
+  #         envkey_NEXT_PUBLIC_NAMESPACE_ENV: production
+  #         envkey_NEXT_PUBLIC_COMMIT_SHA: ${{ github.sha }}
+  #         file_name: .env
+
+  #     - name: Build script
+  #       run: npm run build
+
+  #     - name: Configure AWS credentials
+  #       uses: aws-actions/configure-aws-credentials@v1
+  #       with:
+  #         aws-access-key-id: ${{ secrets.GH_ACTIONS_GLOBAL_AWS_ACCESS_KEY_ID }}
+  #         aws-secret-access-key: ${{ secrets.GH_ACTIONS_GLOBAL_AWS_SECRET_ACCESS_KEY }}
+  #         aws-region: ap-northeast-2
+
+  #     - name: Upload script to s3
+  #       run: |
+  #         aws s3 cp \
+  #           .next s3://webview-cdn.staging.banksalad.com/productcuration/${{ github.sha }}/_next \
+  #           --recursive \
+  #           --region ap-northeast-2 \
+  #           --acl public-read
+  
