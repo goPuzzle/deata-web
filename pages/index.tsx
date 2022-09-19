@@ -1,11 +1,12 @@
-import type { NextPage } from 'next'
+import type { NextPage } from 'next';
 
-const Home: NextPage = () => {
-  return (
-    <div>
-      대타입니다. 환영합니다.
-    </div>
-  )
-}
+import { GlobalNavigationBar } from '@/shared/components/global-navigation-bar';
 
-export default Home
+const Home: NextPage = () => (
+  <div>
+    <GlobalNavigationBar />
+    대타입니다. 환영합니다. 기대해주세요.
+  </div>
+);
+
+export default Home;
