@@ -34,7 +34,7 @@ jobs:
         run: npm run check-types
 
       - name: Check Lint
-        run: npm run lint:changed-since
+        run: npm run lint
 
 
   build:
