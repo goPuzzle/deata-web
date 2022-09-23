@@ -84,13 +84,13 @@ jobs:
       - name: Upload script to s3
         run: |
           aws s3 cp \
-            .next s3://next-js-build-bucket.s3.ap-northeast-2.amazonaws.com/${{ github.sha }}/_next \
+            .next s3://next-js-build-bucket.s3.ap-northeast-2.amazonaws.com/dae-ta/${{ github.sha }}/_next \
             --recursive \
             --region ap-northeast-2 \
             --acl public-read
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.STAGING_WEBVIEW_CDN_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.STAGING_WEBVIEW_CDN_AWS_SECRET_ACCESS_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.GH_ACTIONS_GLOBAL_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.GH_ACTIONS_GLOBAL_AWS_SECRET_ACCESS_KEY }}
 
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1
