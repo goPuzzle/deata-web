@@ -36,53 +36,73 @@ jobs:
         run: npm run lint:changed-since
 
 
-  # build:
-  #   name: Build
-  #   run-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v3
-  #       with:
-  #         fetch-depth: 5
+  build:
+    name: Build
+    run-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 5
 
-  #     - name: Use Node.js
-  #       uses: actions/setup-node@v3
-  #       node-version-file: '.tool-versions'
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        node-version-file: '.tool-versions'
 
-  #     - name: Cache Dependencies
-  #       id: cache-node-modules
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: node_modules
-  #         key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
-  #         restore-keys: ${{ runner.os }}-node-modules-
+      - name: Cache Dependencies
+        id: cache-node-modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: ${{ runner.os }}-node-modules-
 
-  #     - name: Install Dependencies
-  #       if: steps.cache-node-modules.outputs.cache-hit != 'true'
-  #       run: npm ci
+      - name: Install Dependencies
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: npm ci
 
-  #     - name: Make envfile
-  #       uses: SpicyPizza/create-envfile@v1
-  #       with:
-  #         envkey_NEXT_PUBLIC_NAMESPACE_ENV: production
-  #         envkey_NEXT_PUBLIC_COMMIT_SHA: ${{ github.sha }}
-  #         file_name: .env
+      - name: Make envfile
+        uses: SpicyPizza/create-envfile@v1
+        with:
+          envkey_NEXT_PUBLIC_NAMESPACE_ENV: production
+          envkey_NEXT_PUBLIC_COMMIT_SHA: ${{ github.sha }}
+          file_name: .env
 
-  #     - name: Build script
-  #       run: npm run build
+      - name: Build script
+        run: npm run build
 
-  #     - name: Configure AWS credentials
-  #       uses: aws-actions/configure-aws-credentials@v1
-  #       with:
-  #         aws-access-key-id: ${{ secrets.GH_ACTIONS_GLOBAL_AWS_ACCESS_KEY_ID }}
-  #         aws-secret-access-key: ${{ secrets.GH_ACTIONS_GLOBAL_AWS_SECRET_ACCESS_KEY }}
-  #         aws-region: ap-northeast-2
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.GH_ACTIONS_GLOBAL_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.GH_ACTIONS_GLOBAL_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
 
-  #     - name: Upload script to s3
-  #       run: |
-  #         aws s3 cp \
-  #           .next s3://webview-cdn.staging.banksalad.com/productcuration/${{ github.sha }}/_next \
-  #           --recursive \
-  #           --region ap-northeast-2 \
-  #           --acl public-read
-  
+      - name: Upload script to s3
+        run: |
+          aws s3 cp \
+            .next s3://https:///next-js-build-bucket.s3.ap-northeast-2.amazonaws.com/${{ github.sha }}/_next \
+            --recursive \
+            --region ap-northeast-2 \
+            --acl public-read
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.STAGING_WEBVIEW_CDN_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.STAGING_WEBVIEW_CDN_AWS_SECRET_ACCESS_KEY }}
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build Docker Image and Push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: 034360777894.dkr.ecr.ap-northeast-2.amazonaws.com/deata-web:${{ github.sha }}
+
+          
