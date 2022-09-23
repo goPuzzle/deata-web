@@ -7,4 +7,5 @@ const Container = styled.header`
   top: 0;
   left: 0;
   width: 100%;
+  background-color: yellow;
 `;
