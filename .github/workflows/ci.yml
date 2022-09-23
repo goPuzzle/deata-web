@@ -15,7 +15,8 @@ jobs:
       
       - name: Use Node.js
         uses: actions/setup-node@v3
-        node-version-file: '.tool-versions'
+        with:
+          node-version-file: '.tool-versions'
       
       - name: Cache Dependencies
         id: cache-node-modules
