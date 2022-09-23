@@ -84,7 +84,7 @@ jobs:
       - name: Upload script to s3
         run: |
           aws s3 cp \
-            .next s3://next-js-build-bucket.s3/dae-ta/${{ github.sha }}/_next \
+            .next s3://next-js-build-bucket/dae-ta/${{ github.sha }}/_next \
             --recursive \
             --region ap-northeast-2 \
             --acl public-read
