@@ -9,5 +9,4 @@ COPY /public ./public
 
 EXPOSE 3000
 
-# Running the app
 CMD ["npm", "run", "start"]
