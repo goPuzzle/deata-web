@@ -4,4 +4,12 @@ const nextConfig = {
   swcMinify: true,
 }
 
-module.exports = nextConfig
+const getAssetPrefix = () => {
+  return `https://db6slatk8f40s.cloudfront.net/${NEXT_PUBLIC_COMMIT_SHA}`;
+};
+
+module.exports = {
+  reactStrictMode: true,
+  swcMinify: true,
+  assetPrefix: getAssetPrefix(),
+}
