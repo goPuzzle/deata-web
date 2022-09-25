@@ -112,6 +112,7 @@ jobs:
     name: Deploy ECS
     runs-on: ubuntu-latest
     needs: [lint, build]
+    steps:
       - name: Render Amazon ECS task definition
         id: render-web-container
         uses: aws-actions/amazon-ecs-render-task-definition@v1
