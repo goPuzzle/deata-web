@@ -1,8 +1,5 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  reactStrictMode: true,
-  swcMinify: true,
-}
+
+const { NEXT_PUBLIC_COMMIT_SHA } = process.env;
 
 const getAssetPrefix = () => {
   return `https://db6slatk8f40s.cloudfront.net/${NEXT_PUBLIC_COMMIT_SHA}`;
