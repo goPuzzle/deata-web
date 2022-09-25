@@ -117,7 +117,7 @@ jobs:
         id: render-web-container
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: task-definition.json
+          task-definition: './task-definition.json'
           container-name: daeta-web-container
           image: amazon/034360777894.dkr.ecr.ap-northeast-2.amazonaws.com/deata-web:${{ github.sha }}
           environment-variables: "LOG_LEVEL=info"
