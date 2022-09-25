@@ -109,6 +109,7 @@ jobs:
           tags: 034360777894.dkr.ecr.ap-northeast-2.amazonaws.com/deata-web:${{ github.sha }}
 
   deploy:
+    name: Deploy ECS
     runs-on: ubuntu-latest
     needs: [lint, build]
       - name: Render Amazon ECS task definition
