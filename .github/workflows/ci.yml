@@ -79,33 +79,34 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.GH_ACTIONS_GLOBAL_AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.GH_ACTIONS_GLOBAL_AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-northeast-2
+          aws-region: us-east-2
 
       - name: Upload script to s3
         run: |
           aws s3 cp \
-            .next s3://https:///next-js-build-bucket.s3.ap-northeast-2.amazonaws.com/${{ github.sha }}/_next \
+            .next s3://next-js-build-bucket/dae-ta/${{ github.sha }}/_next \
             --recursive \
-            --region ap-northeast-2 \
+            --region us-east-2 \
             --acl public-read
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.STAGING_WEBVIEW_CDN_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.STAGING_WEBVIEW_CDN_AWS_SECRET_ACCESS_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.GH_ACTIONS_GLOBAL_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.GH_ACTIONS_GLOBAL_AWS_SECRET_ACCESS_KEY }}
 
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
 
       - name: Build Docker Image and Push
         uses: docker/build-push-action@v2
         with:
           context: .
           push: true
-          tags: 034360777894.dkr.ecr.ap-northeast-2.amazonaws.com/deata-web:${{ github.sha }}
+          tags: 034360777894.dkr.ecr.us-east-2.amazonaws.com/daeta-web:${{ github.sha }}
+
 
           
