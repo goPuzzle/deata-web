@@ -107,26 +107,6 @@ jobs:
           context: .
           push: true
           tags: 034360777894.dkr.ecr.us-east-2.amazonaws.com/daeta-web:${{ github.sha }}
-  
-  # deploy:
-  #   name: Deploy ECS
-  #   runs-on: ubuntu-latest
-  #   needs: [lint, build]
-  #   steps:
-  #     - name: Render Amazon ECS task definition
-  #       id: render-web-container
-  #       uses: aws-actions/amazon-ecs-render-task-definition@v1
-  #       with:
-  #         task-definition: './task-definition.json'
-  #         container-name: daeta-web-container
-  #         image: amazon/034360777894.dkr.ecr.us-east-1.amazonaws.com/daeta-web:${{ github.sha }}
-  #         environment-variables: "LOG_LEVEL=info"
 
-  #     - name: Deploy to Amazon ECS service
-  #       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-  #       with:
-  #         task-definition: ${{ steps.render-web-container.outputs.task-definition }}
-  #         service: daeta-web-service
-  #         cluster: daeta-webg-cluster
 
           
