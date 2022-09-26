@@ -79,14 +79,14 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.GH_ACTIONS_GLOBAL_AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.GH_ACTIONS_GLOBAL_AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-northeast-2
+          aws-region: us-east-2
 
       - name: Upload script to s3
         run: |
           aws s3 cp \
             .next s3://next-js-build-bucket/dae-ta/${{ github.sha }}/_next \
             --recursive \
-            --region ap-northeast-2 \
+            --region us-east-2 \
             --acl public-read
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.GH_ACTIONS_GLOBAL_AWS_ACCESS_KEY_ID }}
@@ -106,27 +106,27 @@ jobs:
         with:
           context: .
           push: true
-          tags: 034360777894.dkr.ecr.ap-northeast-2.amazonaws.com/deata-web:${{ github.sha }}
+          tags: 034360777894.dkr.ecr.us-east-1.amazonaws.com/daeta-web:${{ github.sha }}
 
-  deploy:
-    name: Deploy ECS
-    runs-on: ubuntu-latest
-    needs: [lint, build]
-    steps:
-      - name: Render Amazon ECS task definition
-        id: render-web-container
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: './task-definition.json'
-          container-name: daeta-web-container
-          image: amazon/034360777894.dkr.ecr.ap-northeast-2.amazonaws.com/deata-web:${{ github.sha }}
-          environment-variables: "LOG_LEVEL=info"
+  # deploy:
+  #   name: Deploy ECS
+  #   runs-on: ubuntu-latest
+  #   needs: [lint, build]
+  #   steps:
+  #     - name: Render Amazon ECS task definition
+  #       id: render-web-container
+  #       uses: aws-actions/amazon-ecs-render-task-definition@v1
+  #       with:
+  #         task-definition: './task-definition.json'
+  #         container-name: daeta-web-container
+  #         image: amazon/034360777894.dkr.ecr.us-east-1.amazonaws.com/daeta-web:${{ github.sha }}
+  #         environment-variables: "LOG_LEVEL=info"
 
-      - name: Deploy to Amazon ECS service
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        with:
-          task-definition: ${{ steps.render-web-container.outputs.task-definition }}
-          service: daeta-web-service
-          cluster: daeta-webg-cluster
+  #     - name: Deploy to Amazon ECS service
+  #       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+  #       with:
+  #         task-definition: ${{ steps.render-web-container.outputs.task-definition }}
+  #         service: daeta-web-service
+  #         cluster: daeta-webg-cluster
 
           
