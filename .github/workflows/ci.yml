@@ -106,7 +106,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: 034360777894.dkr.ecr.us-east-1.amazonaws.com/daeta-web:${{ github.sha }}
+          tags: 034360777894.dkr.ecr.us-east-2.amazonaws.com/daeta-web:${{ github.sha }}
 
   # deploy:
   #   name: Deploy ECS
